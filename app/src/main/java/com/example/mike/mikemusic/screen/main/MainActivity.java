@@ -1,7 +1,9 @@
-package com.example.mike.mikemusic;
+package com.example.mike.mikemusic.screen.main;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+
+import com.example.mike.mikemusic.R;
 
 public class MainActivity extends AppCompatActivity {
 

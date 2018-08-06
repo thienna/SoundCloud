@@ -3,6 +3,8 @@
     <color name="colorPrimary">#64dd17</color>
     <color name="colorPrimaryDark">#5A6978</color>
     <color name="colorAccent">#1faa00</color>
-    <color name="color_text_primary">#47525E</color>
-    <color name="color_control_background">#E5E8EB</color>
+    <color name="color_river_bed">#47525E</color>
+    <color name="color_gray_chateau">#969FAA</color>
+    <color name="color_silver">#bebebe</color>
+    <color name="color_athens_gray">#E5E8EB</color>
 </resources>

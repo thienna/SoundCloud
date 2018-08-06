@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="genre"
+            type="com.example.mike.mikemusic.data.model.Genre" />
+
+        <variable
+            name="viewModel"
+            type="com.example.mike.mikemusic.screen.home.HomeViewModel" />
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_4"
+        android:onClick="@{() -> viewModel.onRecyclerViewItemClick(genre)}">
+
+        <ImageView
+            android:id="@+id/image_genre_background"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_180"
+            android:scaleType="fitXY"
+            app:imageResource="@{genre.resourceImage}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/card_genre_small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
+            app:cardCornerRadius="@dimen/dp_5"
+            app:layout_constraintBottom_toBottomOf="@id/image_genre_background"
+            app:layout_constraintStart_toStartOf="@id/image_genre_background">
+
+            <ImageView
+                android:id="@+id/image_genre_small"
+                android:layout_width="@dimen/dp_80"
+                android:layout_height="@dimen/dp_80"
+                android:scaleType="centerCrop"
+                app:imageResource="@{genre.resourceImageSmall}" />
+        </android.support.v7.widget.CardView>
+
+        <TextView
+            android:id="@+id/text_genre"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
+            android:ellipsize="marquee"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:freezesText="true"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
+            android:text="@{genre.title}"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
+            android:textColor="@android:color/white"
+            app:layout_constraintBottom_toBottomOf="@id/card_genre_small"
+            app:layout_constraintEnd_toStartOf="@+id/image_genre_play"
+            app:layout_constraintStart_toEndOf="@id/card_genre_small" />
+
+        <ImageView
+            android:id="@+id/image_genre_play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:onClick="@{() -> viewModel.onGenrePlayButtonClick(genre)}"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_play_circle_filled_white_24dp"
+            app:layout_constraintBottom_toBottomOf="@id/card_genre_small"
+            app:layout_constraintEnd_toEndOf="@id/image_genre_background" />
+
+    </android.support.constraint.ConstraintLayout>
+</layout>

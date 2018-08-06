@@ -1,4 +1,16 @@
 <resources>
     <string name="app_name">Mike Music</string>
     <string name="search_hint">Search track&#8230;</string>
+    <string name="home">Home</string>
+    <string name="playlist">Playlist</string>
+    <string name="personal">Personal</string>
+    <string name="play_timing">%s:%s</string>
+    <string name="all_music">All Music</string>
+    <string name="all_audio">All Audio</string>
+    <string name="alternative_rock">Alternative Rock</string>
+    <string name="ambient">Ambient</string>
+    <string name="classical">Classical</string>
+    <string name="country">Country</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -27,6 +27,14 @@
             android:name=".screen.main.MainActivity"
             android:theme="@style/CustomAppTheme" />
 
+        <activity
+            android:name=".screen.playmusic.PlayMusicActivity"
+            android:theme="@style/CustomAppTheme" />
+
+        <activity
+            android:name=".screen.genre.GenreActivity"
+            android:theme="@style/CustomAppTheme" />
+
         <service android:name=".service.MusicService" />
     </application>
 

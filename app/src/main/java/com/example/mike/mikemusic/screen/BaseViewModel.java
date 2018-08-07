@@ -5,4 +5,7 @@ package com.example.mike.mikemusic.screen;
  */
 
 public interface BaseViewModel {
+    void onStart();
+
+    void onStop();
 }

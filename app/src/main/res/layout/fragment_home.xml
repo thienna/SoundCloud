@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="viewModel"
             type="com.example.mike.mikemusic.screen.home.HomeViewModel" />
@@ -13,14 +15,15 @@
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fillViewport="true"
         tools:context=".screen.home.HomeFragment">
 
-        <android.support.v7.widget.RecyclerView
+        <include
             android:id="@+id/recycler_genre"
+            layout="@layout/recycler_view_with_data"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-            app:setAdapter="@{viewModel.adapter}" />
+            app:viewModel="@{(com.example.mike.mikemusic.screen.BaseRecyclerViewViewModel)viewModel}" />
 
     </android.support.v4.widget.NestedScrollView>
 

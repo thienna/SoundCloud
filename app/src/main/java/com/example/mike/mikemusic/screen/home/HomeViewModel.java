@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.example.mike.mikemusic.data.model.Genre;
 import com.example.mike.mikemusic.data.repository.GenreRepository;
+import com.example.mike.mikemusic.data.source.local.GenreLocalDataSource;
 import com.example.mike.mikemusic.screen.BaseRecyclerViewViewModel;
 import com.example.mike.mikemusic.screen.genre.GenreActivity;
 import com.example.mike.mikemusic.screen.playmusic.PlayMusicActivity;
@@ -30,7 +31,7 @@ public class HomeViewModel extends BaseRecyclerViewViewModel<Genre, GenreAdapter
     public HomeViewModel(AppCompatActivity activity) {
         super(activity);
         mActivity = activity;
-        mGenreRepository = GenreRepository.getInstance();
+        mGenreRepository = GenreRepository.getInstance(GenreLocalDataSource.getInstance());
         mSubscription = new CompositeDisposable();
     }
 

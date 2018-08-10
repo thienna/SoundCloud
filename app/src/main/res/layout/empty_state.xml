@@ -8,12 +8,8 @@
             type="int" />
 
         <variable
-            name="text"
+            name="textError"
             type="String" />
-
-        <variable
-            name="image"
-            type="android.graphics.drawable.Drawable" />
     </data>
 
     <LinearLayout
@@ -25,18 +21,11 @@
         android:orientation="vertical"
         android:visibility="@{visibleState}">
 
-        <ImageView
-            android:layout_width="@dimen/dp_100"
-            android:layout_height="@dimen/dp_100"
-            android:layout_gravity="center"
-            android:src="@{image}" />
-
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_10"
             android:gravity="center"
-            android:text="@string/app_name"
+            android:text="@string/empty_state"
             android:textColor="@android:color/black"
             android:textSize="@dimen/sp_18"
             android:textStyle="bold" />
@@ -46,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_10"
             android:gravity="center"
-            android:text="@{text}"
+            android:text="@{textError}"
             android:textSize="@dimen/sp_15" />
     </LinearLayout>
 

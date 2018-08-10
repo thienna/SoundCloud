@@ -40,4 +40,10 @@ public class BindingUtils {
                     .into(view);
         }
     }
+
+    @BindingAdapter({"endlessScrollListener"})
+    public static void setScrollListener(RecyclerView recyclerView,
+                                         RecyclerView.OnScrollListener onScrollListener) {
+        recyclerView.addOnScrollListener(onScrollListener);
+    }
 }

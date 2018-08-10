@@ -3,6 +3,8 @@ package com.example.mike.mikemusic.screen;
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.Toast;
 
@@ -21,6 +23,8 @@ public abstract class BaseRecyclerViewViewModel<V, T extends BaseRecyclerViewAda
     protected boolean mProgressBarVisibility;
     protected int mEmptyViewVisible;
     protected AppCompatActivity mActivity;
+    protected int mPaddingTop;
+    protected EndlessRecyclerViewOnScrollListener mEndlessRecyclerViewOnScrollListener;
 
     private BaseRecyclerViewViewModel() {
     }
@@ -29,6 +33,13 @@ public abstract class BaseRecyclerViewViewModel<V, T extends BaseRecyclerViewAda
         mActivity = activity;
         mEmptyViewVisible = View.GONE;
         mAdapter = newAdapter();
+        setPaddingTop(0f);
+        mEndlessRecyclerViewOnScrollListener = new EndlessRecyclerViewOnScrollListener() {
+            @Override
+            public void onLoadMore() {
+
+            }
+        };
     }
 
     @Bindable
@@ -44,6 +55,18 @@ public abstract class BaseRecyclerViewViewModel<V, T extends BaseRecyclerViewAda
     public void setEmptyViewVisible(int emptyViewVisible) {
         mEmptyViewVisible = emptyViewVisible;
         notifyPropertyChanged(BR.emptyViewVisible);
+    }
+
+    @Bindable
+    public int getPaddingTop(){
+        return mPaddingTop;
+    }
+
+    public void setPaddingTop(float dpValue) {
+        DisplayMetrics metrics = mActivity.getResources().getDisplayMetrics();
+        float fpixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpValue, metrics);
+        mPaddingTop = Math.round(fpixels);
+        notifyPropertyChanged(BR.paddingTop);
     }
 
     public abstract T newAdapter();
@@ -77,5 +100,16 @@ public abstract class BaseRecyclerViewViewModel<V, T extends BaseRecyclerViewAda
 
     public BaseRecyclerViewAdapter getAdapter() {
         return mAdapter;
+    }
+
+    @Bindable
+    public EndlessRecyclerViewOnScrollListener getEndlessRecyclerViewOnScrollListener() {
+        return mEndlessRecyclerViewOnScrollListener;
+    }
+
+    public void setEndlessRecyclerViewOnScrollListener(EndlessRecyclerViewOnScrollListener
+                                                               endlessRecyclerViewOnScrollListener) {
+        mEndlessRecyclerViewOnScrollListener = endlessRecyclerViewOnScrollListener;
+        notifyPropertyChanged(BR.endlessRecyclerViewOnScrollListener);
     }
 }

@@ -19,7 +19,7 @@
             layout="@layout/empty_state"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:textError="@{@string/no_internet}"
+            app:textError="@{viewModel.textEmpty}"
             app:visibleState="@{viewModel.emptyViewVisible}" />
 
         <android.support.constraint.ConstraintLayout

@@ -4,6 +4,7 @@ import android.databinding.BindingAdapter;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -45,5 +46,10 @@ public class BindingUtils {
     public static void setScrollListener(RecyclerView recyclerView,
                                          RecyclerView.OnScrollListener onScrollListener) {
         recyclerView.addOnScrollListener(onScrollListener);
+    }
+
+    @BindingAdapter({"formatDuration"})
+    public static void formatDuration(TextView view,long number) {
+        view.setText(Utils.parseMilliSecondsToTimer(number));
     }
 }

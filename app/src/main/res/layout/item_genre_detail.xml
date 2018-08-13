@@ -117,7 +117,7 @@
             android:id="@+id/text_track_duration"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@{viewModel.formatDuration(track.duration)}"
+            app:formatDuration="@{track.duration}"
             android:textSize="@dimen/sp_12"
             android:textAlignment="center"
             app:layout_constraintBottom_toTopOf="@+id/image_more_options"

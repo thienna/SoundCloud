@@ -6,9 +6,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
-import android.widget.Toast;
 
 import com.example.mike.mikemusic.BR;
+import com.example.mike.mikemusic.R;
 
 import java.util.List;
 
@@ -25,6 +25,7 @@ public abstract class BaseRecyclerViewViewModel<V, T extends BaseRecyclerViewAda
     protected AppCompatActivity mActivity;
     protected int mPaddingTop;
     protected EndlessRecyclerViewOnScrollListener mEndlessRecyclerViewOnScrollListener;
+    protected String mTextEmpty;
 
     private BaseRecyclerViewViewModel() {
     }
@@ -40,6 +41,17 @@ public abstract class BaseRecyclerViewViewModel<V, T extends BaseRecyclerViewAda
 
             }
         };
+        mTextEmpty = mActivity.getString(R.string.no_internet);
+    }
+
+    @Bindable
+    public String getTextEmpty() {
+        return mTextEmpty;
+    }
+
+    public void setTextEmpty(String textEmpty) {
+        mTextEmpty = textEmpty;
+        notifyPropertyChanged(BR.textEmpty);
     }
 
     @Bindable
@@ -95,7 +107,10 @@ public abstract class BaseRecyclerViewViewModel<V, T extends BaseRecyclerViewAda
     public void onDataLoadFailure(String message) {
         hideProgressBar();
         setEmptyViewVisible(View.VISIBLE);
-        Toast.makeText(mActivity, message, Toast.LENGTH_SHORT).show();
+        if (message != null) {
+            setTextEmpty(message);
+        }
+//        Toast.makeText(mActivity, message, Toast.LENGTH_SHORT).show();
     }
 
     public BaseRecyclerViewAdapter getAdapter() {

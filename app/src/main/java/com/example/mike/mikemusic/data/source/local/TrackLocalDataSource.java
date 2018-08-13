@@ -46,7 +46,9 @@ public class TrackLocalDataSource implements TrackDatasource.LocalDataSource {
         List<Track> tracks = new ArrayList<>();
         ContentResolver musicResolver = mContext.getContentResolver();
         Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        Cursor musicCursor = musicResolver.query(musicUri, null, null, null, null);
+        Cursor musicCursor = musicResolver.query(musicUri, null,
+                MediaStore.Audio.Media.DATA + " LIKE ?",
+                new String[]{QUERY_DIRECTORY_NAME}, null);
 
         if (musicCursor == null) {
             return Observable.error(new NullPointerException());
@@ -65,7 +67,7 @@ public class TrackLocalDataSource implements TrackDatasource.LocalDataSource {
             Track track = new Track();
             track.setTitle(musicCursor.getString(titleColumn));
             track.setUri(musicCursor.getString(filePathColumn));
-            track.setDuration(musicCursor.getInt(durationColumn));
+            track.setDuration(musicCursor.getLong(durationColumn));
             track.setId(musicCursor.getInt(idColumn));
             tracks.add(track);
         } while (musicCursor.moveToNext());

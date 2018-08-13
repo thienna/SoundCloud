@@ -1,14 +1,15 @@
 package com.example.mike.mikemusic.screen.personal;
 
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
 
+import com.example.mike.mikemusic.R;
 import com.example.mike.mikemusic.data.model.Track;
 import com.example.mike.mikemusic.data.repository.TrackRepository;
 import com.example.mike.mikemusic.data.source.local.TrackLocalDataSource;
 import com.example.mike.mikemusic.data.source.remote.TrackRemoteDataSource;
 import com.example.mike.mikemusic.screen.BaseRecyclerViewViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -49,7 +50,11 @@ public class PersonalViewModel extends BaseRecyclerViewViewModel<Track, TrackOff
                     @Override
                     public void accept(List<Track> tracks) {
                         hideProgressBar();
-                        onDataLoaded(tracks);
+                        if (tracks.size() == 0) {
+                            onDataLoadFailure(mActivity.getString(R.string.empty_recycler));
+                        } else {
+                            onDataLoaded(tracks);
+                        }
                     }
                 }, new Consumer<Throwable>() {
                     @Override
@@ -63,7 +68,7 @@ public class PersonalViewModel extends BaseRecyclerViewViewModel<Track, TrackOff
 
     @Override
     public TrackOfflineRecyclerAdapter newAdapter() {
-        return null;
+        return new TrackOfflineRecyclerAdapter(mActivity, this, new ArrayList<>());
     }
 
     @Override
@@ -72,7 +77,7 @@ public class PersonalViewModel extends BaseRecyclerViewViewModel<Track, TrackOff
 
     @Override
     public void onDataLoaded(List<Track> data) {
-        Toast.makeText(mActivity, data.toString(), Toast.LENGTH_SHORT).show();
+        mAdapter.addItem(data);
     }
 
     @Override

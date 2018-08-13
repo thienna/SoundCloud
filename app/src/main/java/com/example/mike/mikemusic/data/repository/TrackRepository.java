@@ -24,15 +24,19 @@ public class TrackRepository implements
 
     @NonNull
     private TrackDatasource.RemoteDataSource mRemoteDataSource;
+    private TrackDatasource.LocalDataSource mLocalDataSource;
 
-    private TrackRepository(@NonNull TrackDatasource.RemoteDataSource remoteDataSource) {
+    private TrackRepository(@NonNull TrackDatasource.RemoteDataSource remoteDataSource,
+                            @NonNull TrackDatasource.LocalDataSource localDataSource) {
         mRemoteDataSource = checkNotNull(remoteDataSource);
+        mLocalDataSource = checkNotNull(localDataSource);
     }
 
     public static synchronized TrackRepository getInstance(
-            TrackDatasource.RemoteDataSource remoteDataSource) {
+            TrackDatasource.RemoteDataSource remoteDataSource,
+            TrackDatasource.LocalDataSource localDataSource) {
         if (sInstance == null) {
-            sInstance = new TrackRepository(remoteDataSource);
+            sInstance = new TrackRepository(remoteDataSource, localDataSource);
         }
         return sInstance;
     }
@@ -46,5 +50,10 @@ public class TrackRepository implements
     @Override
     public Observable<List<Track>> getTracksByGenre(String genrePath, int offset) {
         return mRemoteDataSource.getTracksByGenre(genrePath, offset);
+    }
+
+    @Override
+    public Observable<List<Track>> getTracksLocal() {
+        return mLocalDataSource.getTracksLocal();
     }
 }

@@ -82,27 +82,27 @@ public class GenreAdapter extends BaseRecyclerViewAdapter<Genre, GenreAdapter.Ge
             mGenre = genre;
             switch (mGenre.getPath()) {
                 case GenreType.ALL_MUSIC:
-                    setGenreProperties(R.string.all_music, R.drawable.genre_music, R.drawable.genre_small_sample);
+                    setGenreProperties(R.string.all_music, R.drawable.genre_music, R.drawable.alternative_rock_small);
                     break;
                 case GenreType.ALL_AUDIO:
                     setGenreProperties(R.string.all_audio, R.drawable.genre_all_audio, R.drawable
-                            .genre_small_sample);
+                            .all_audio_small);
                     break;
                 case GenreType.ALTERNATIVE_ROCK:
                     setGenreProperties(R.string.alternative_rock, R.drawable.genre_alternative_rock, R.drawable
-                            .genre_small_sample);
+                            .ambient_small);
                     break;
                 case GenreType.CLASSICAL:
                     setGenreProperties(R.string.classical, R.drawable.genre_classical, R.drawable
-                            .genre_small_sample);
+                            .classical_small);
                     break;
                 case GenreType.AMBIENT:
                     setGenreProperties(R.string.ambient, R.drawable.genre_ambient, R.drawable
-                            .genre_small_sample);
+                            .all_music_small);
                     break;
                 case GenreType.COUNTRY:
                     setGenreProperties(R.string.country, R.drawable.genre_country, R.drawable
-                            .genre_small_sample);
+                            .country_small);
                     break;
             }
             mBinding.setGenre(genre);

@@ -17,5 +17,6 @@ public interface TrackDatasource {
     }
 
     interface LocalDataSource {
+        Observable<List<Track>> getTracksLocal();
     }
 }

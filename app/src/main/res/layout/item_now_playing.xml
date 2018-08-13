@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="track"
+            type="com.example.mike.mikemusic.data.model.Track" />
+
+        <variable
+            name="viewModel"
+            type="com.example.mike.mikemusic.screen.nowplaying.NowPlayingViewModel" />
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/dp_6"
+        android:paddingEnd="@dimen/dp_12"
+        android:paddingStart="@dimen/dp_12"
+        android:paddingTop="@dimen/dp_6">
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/card_now_playing_art"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:layout_width="@dimen/dp_66"
+                android:layout_height="@dimen/dp_66"
+                android:scaleType="centerCrop" />
+
+        </android.support.v7.widget.CardView>
+
+        <TextView
+            android:id="@+id/text_track_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_16"
+            android:ellipsize="marquee"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:freezesText="true"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/color_river_bed"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/image_more_options"
+            app:layout_constraintStart_toEndOf="@+id/card_now_playing_art"
+            app:layout_constraintTop_toTopOf="@id/card_now_playing_art" />
+
+        <TextView
+            android:id="@+id/text_track_singer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_2"
+            app:layout_constraintEnd_toEndOf="@+id/text_track_title"
+            app:layout_constraintStart_toStartOf="@+id/text_track_title"
+            app:layout_constraintTop_toBottomOf="@+id/text_track_title" />
+
+        <ImageView
+            android:id="@+id/image_more_options"
+            android:layout_width="@dimen/dp_32"
+            android:layout_height="@dimen/dp_32"
+            android:src="@drawable/ic_more_vert_gray_24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/image_now_playing_notice"
+            android:layout_width="@dimen/dp_32"
+            android:layout_height="@dimen/dp_32"
+            android:src="@drawable/ic_music_note_green_24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/image_more_options"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</layout>

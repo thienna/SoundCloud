@@ -6,6 +6,7 @@ import android.widget.Toast;
 import com.example.mike.mikemusic.R;
 import com.example.mike.mikemusic.data.model.Track;
 import com.example.mike.mikemusic.data.repository.TrackRepository;
+import com.example.mike.mikemusic.data.source.local.TrackLocalDataSource;
 import com.example.mike.mikemusic.data.source.remote.TrackRemoteDataSource;
 import com.example.mike.mikemusic.screen.BaseRecyclerViewViewModel;
 import com.example.mike.mikemusic.utils.Utils;
@@ -29,7 +30,8 @@ public class GenreViewModel extends BaseRecyclerViewViewModel<Track, TracksByGen
 
     public GenreViewModel(AppCompatActivity activity) {
         super(activity);
-        mTrackRepository = TrackRepository.getInstance(TrackRemoteDataSource.getInstance());
+        mTrackRepository = TrackRepository.getInstance(TrackRemoteDataSource.getInstance(),
+                TrackLocalDataSource.getInstance(mActivity));
         mSubscription = new CompositeDisposable();
     }
 

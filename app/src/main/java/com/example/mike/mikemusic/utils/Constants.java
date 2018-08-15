@@ -11,6 +11,8 @@ public final class Constants {
     public static final String BREAK_LINE = "\n";
     public static final int DEFAULT_CACHE_SIZE = 5 * 1024 * 1024;
 
+    public static final int SEEK_BAR_TRACK_DURATION = 100;
+
     private Constants() {
 
     }

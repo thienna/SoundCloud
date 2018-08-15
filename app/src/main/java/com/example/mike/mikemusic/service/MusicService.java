@@ -1,35 +1,42 @@
 package com.example.mike.mikemusic.service;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Binder;
 import android.os.IBinder;
-import android.os.PowerManager;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
 
-import com.example.mike.mikemusic.BuildConfig;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
+import com.example.mike.mikemusic.R;
 import com.example.mike.mikemusic.data.model.Track;
+import com.example.mike.mikemusic.screen.main.MainActivity;
+import com.example.mike.mikemusic.utils.music.MusicPlayerController;
+import com.example.mike.mikemusic.utils.music.MusicPlayerManager;
 import com.example.mike.mikemusic.utils.music.PlaybackInfoListener;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by ThienNA on 02/08/2018.
  */
 
-public class MusicService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener {
+public class MusicService extends Service implements MusicPlayerManager {
 
     // Action
     public static final String ACTION_CHANGE_MEDIA_STATE = "ACTION_PLAY_PAUSE";
     public static final String ACTION_NEXT_TRACK = "ACTION_NEXT_TRACK";
     public static final String ACTION_PREVIOUS_TRACK = "ACTION_PREVIOUS_TRACK";
     public static final String ACTION_OPEN_PLAY_MUSIC_ACTIVITY = "ACTION_OPEN_PLAY_MUSIC_ACTIVITY";
-    //Binder
-    private final IBinder mIBinder = new MusicBinder();
+
     // Notification
     private static final int NOTIFY_ID = 1;
     private static final int ORDER_ACTION_PREVIOUS = 0;
@@ -40,25 +47,26 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     private static final String TITLE_ACTION_PAUSE = "Pause";
     private static final String TITLE_ACTION_NEXT = "Next";
 
-//    private MusicPlayerManager mMusicPlayerManager;
-//    private NotificationCompat.Builder mBuilder;
-//    private PendingIntent mPendingIntentOpenApp;
-//    private PendingIntent mPendingIntentNext;
-//    private PendingIntent mPendingIntentPrev;
-//    private PendingIntent mPendingIntentPlayPause;
-//    private Bitmap mBitmap;
+    //Binder
+    private final IBinder mIBinder = new MusicBinder();
 
-    private MediaPlayer mMediaPlayer;
-    private List<Track> mTracks;
-
-    private int mCurrentTrackPosition;
-
-    private PlaybackInfoListener mListener;
+    private MusicPlayerManager mMusicPlayerManager;
+    private NotificationCompat.Builder mBuilder;
+    private PendingIntent mPendingIntentOpenApp;
+    private PendingIntent mPendingIntentNext;
+    private PendingIntent mPendingIntentPrev;
+    private PendingIntent mPendingIntentPlayPause;
+    private Bitmap mBitmap;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        initMusicPlayer();
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        handleIntent(intent);
+        return START_NOT_STICKY;
     }
 
     @Nullable
@@ -69,103 +77,231 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     }
 
     @Override
-    public boolean onUnbind(Intent intent) {
-        return false;
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        handleIntent(intent);
-        return START_NOT_STICKY;
-    }
-
-    public void initMusicPlayer() {
-        mCurrentTrackPosition = 0;
-        mMediaPlayer = new MediaPlayer();
-        mTracks = new ArrayList<>();
-
-        //set player properties
-        mMediaPlayer.setWakeMode(getApplicationContext(),
-                PowerManager.PARTIAL_WAKE_LOCK);
-        mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        mMediaPlayer.setOnPreparedListener(this);
-        mMediaPlayer.setOnCompletionListener(this);
-        mMediaPlayer.setOnErrorListener(this);
-    }
-
-    @Override
-    public void onPrepared(MediaPlayer mp) {
-        mMediaPlayer.start();
-        if (mListener != null) {
-            mListener.onTrackChanged(mTracks.get(mCurrentTrackPosition));
+    public int getMediaState() {
+        if (mMusicPlayerManager == null) {
+            return PlaybackInfoListener.State.INVALID;
         }
+        return mMusicPlayerManager.getMediaState();
     }
 
     @Override
-    public void onCompletion(MediaPlayer mp) {
+    public void changeMediaState() {
+        if (mMusicPlayerManager == null) {
+            return;
+        }
+        mMusicPlayerManager.changeMediaState();
     }
 
     @Override
-    public boolean onError(MediaPlayer mp, int what, int extra) {
-        return false;
+    public void playPreviousTrack() {
+        if (mMusicPlayerManager == null) {
+            return;
+        }
+        mMusicPlayerManager.playPreviousTrack();
     }
 
-    public void setList(ArrayList<Track> tracks) {
-        if (tracks == null || tracks.size() == 0) return;
-        mTracks.addAll(tracks);
+    @Override
+    public void playNextTrack() {
+        if (mMusicPlayerManager == null) {
+            return;
+        }
+        mMusicPlayerManager.playNextTrack();
+    }
+
+    @Override
+    public boolean isShuffle() {
+        return mMusicPlayerManager != null && mMusicPlayerManager.isShuffle();
+    }
+
+    @Override
+    public void toggleShuffleState() {
+        if (mMusicPlayerManager == null) {
+            return;
+        }
+        mMusicPlayerManager.toggleShuffleState();
+    }
+
+    @Override
+    public int getLoopType() {
+        if (mMusicPlayerManager == null) return PlaybackInfoListener.LoopType.NO_LOOP;
+        return mMusicPlayerManager.getLoopType();
+    }
+
+    @Override
+    public void changeLoopType() {
+        if (mMusicPlayerManager == null) return;
+        mMusicPlayerManager.changeLoopType();
+    }
+
+    // TODO: 8/15/2018 Test this method
+    @Override
+    public int getCurrentTrackPosition() {
+        return mMusicPlayerManager != null ? mMusicPlayerManager.getCurrentTrackPosition() : 0;
+    }
+
+    @Override
+    public void addToNextUp(Track track) {
+        if (mMusicPlayerManager == null) {
+            return;
+        }
+        mMusicPlayerManager.addToNextUp(track);
+    }
+
+    // TODO: 8/15/2018 Test this method
+    @Override
+    public void playTrackAtPosition(int pos, Track... tracks) {
+        if (mMusicPlayerManager == null) {
+            mMusicPlayerManager = new MusicPlayerController(this);
+        }
+        mMusicPlayerManager.playTrackAtPosition(pos, tracks);
+    }
+
+    @Override
+    public List<Track> getTracks() {
+        if (mMusicPlayerManager == null) {
+            return null;
+        }
+        return mMusicPlayerManager.getTracks();
+    }
+
+    @Override
+    public Track getCurrentTrack() {
+        return mMusicPlayerManager != null ? mMusicPlayerManager.getCurrentTrack() : null;
+    }
+
+    @Override
+    public void seekTo(int position) {
+        if (mMusicPlayerManager == null) {
+            return;
+        }
+        mMusicPlayerManager.seekTo(position);
+    }
+
+    @Override
+    public void setPlaybackInfoListener(PlaybackInfoListener listener) {
+        if (mMusicPlayerManager == null) return;
+        mMusicPlayerManager.setPlaybackInfoListener(listener);
+    }
+
+    @Override
+    public void release() {
+    }
+
+    @Override
+    public void startProgressCallback() {
+    }
+
+    @Override
+    public void endProgressCallback() {
     }
 
     public void handleIntent(Intent intent) {
-
+        String action = intent != null ? intent.getAction() : null;
+        if (action == null) return;
+        switch (action) {
+            case ACTION_CHANGE_MEDIA_STATE:
+                if (getMediaState() != PlaybackInfoListener.State.PREPARE) {
+                    changeMediaState();
+                }
+                break;
+            case ACTION_PREVIOUS_TRACK:
+                playPreviousTrack();
+                break;
+            case ACTION_NEXT_TRACK:
+                playNextTrack();
+                break;
+        }
     }
 
-    public void setPlaybackListener(PlaybackInfoListener listener) {
-        if (listener == null) {
+    public void loadImage() {
+        if (getCurrentTrack() == null) {
             return;
         }
-        mListener = listener;
-        if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
-            mListener.onTrackChanged(mTracks.get(mCurrentTrackPosition));
+        Glide.with(this).asBitmap().load(getCurrentTrack().getArtworkUrl())
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                        mBitmap = resource;
+
+                        mBuilder.setLargeIcon(mBitmap);
+                        NotificationManager notificationManager = (NotificationManager)
+                                getSystemService(Context.NOTIFICATION_SERVICE);
+                        notificationManager.notify(NOTIFY_ID, mBuilder.build());
+                    }
+                });
+    }
+
+    public void initNotification(@PlaybackInfoListener.State int state) {
+        if (getCurrentTrack() == null) {
+            return;
+        }
+        initBaseNotification();
+        if (state == PlaybackInfoListener.State.PAUSE) {
+            stopForeground(false);
+            mBuilder.setOngoing(false)
+                    .addAction(R.drawable.ic_skip_previous_black_36dp, TITLE_ACTION_PREVIOUS, mPendingIntentPrev)
+                    .addAction(R.drawable.ic_play_arrow_black_48dp, TITLE_ACTION_PLAY, mPendingIntentPlayPause)
+                    .addAction(R.drawable.ic_skip_next_black_36dp, TITLE_ACTION_NEXT, mPendingIntentNext)
+                    .setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle()
+                            .setShowActionsInCompactView(ORDER_ACTION_PREVIOUS,
+                                    ORDER_ACTION_PLAY_PAUSE, ORDER_ACTION_NEXT));
+            NotificationManager notificationManager = (NotificationManager) getSystemService
+                    (Context.NOTIFICATION_SERVICE);
+            notificationManager.notify(NOTIFY_ID, mBuilder.build());
+        } else {
+            mBuilder.addAction(R.drawable.ic_skip_previous_black_36dp, TITLE_ACTION_PREVIOUS, mPendingIntentPrev)
+                    .addAction(R.drawable.ic_pause_black_48dp, TITLE_ACTION_PAUSE, mPendingIntentPlayPause)
+                    .addAction(R.drawable.ic_skip_next_black_36dp, TITLE_ACTION_NEXT, mPendingIntentNext)
+                    .setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle()
+                            .setShowActionsInCompactView(ORDER_ACTION_PREVIOUS, ORDER_ACTION_PLAY_PAUSE, ORDER_ACTION_NEXT));
+
+            startForeground(NOTIFY_ID, mBuilder.build());
         }
     }
 
-    public void playTracksList(List<Track> tracks, int position) {
-        if (tracks == null || tracks.size() == 0) return;
-        if (mMediaPlayer == null) {
-            initMusicPlayer();
-            mCurrentTrackPosition = position;
-            mTracks.addAll(tracks);
-            playMusic();
-
+    private void setLargeIconBuilder() {
+        if (mBuilder == null) {
             return;
         }
-        if (mMediaPlayer.isPlaying()) {
-            mMediaPlayer.reset();
-            mTracks.clear();
-            mTracks.addAll(tracks);
-            mCurrentTrackPosition = position;
-            playMusic();
-            return;
+        if (mBitmap == null) {
+            mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(),
+                    R.mipmap.ic_launcher_foreground));
+        } else {
+            mBuilder.setLargeIcon(mBitmap);
         }
-
-        mCurrentTrackPosition = position;
-        mTracks.addAll(tracks);
-        playMusic();
     }
 
-    private void playMusic() {
-        if (mMediaPlayer != null){
-            mMediaPlayer.reset();
-        }
+    private void initBaseNotification() {
+        Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
+        notificationIntent.setAction(ACTION_OPEN_PLAY_MUSIC_ACTIVITY);
+        mPendingIntentOpenApp = PendingIntent.getActivity(getApplicationContext(), 0,
+                notificationIntent, 0);
 
-        if (mTracks == null || mTracks.size() == 0) return;
-        try {
-            mMediaPlayer.setDataSource(mTracks.get(mCurrentTrackPosition).getUri() +
-                    "/stream?client_id=" + BuildConfig.API_KEY);
-            mMediaPlayer.prepareAsync();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Intent actionNextIntent = new Intent(getApplicationContext(), MusicService.class);
+        actionNextIntent.setAction(ACTION_NEXT_TRACK);
+        mPendingIntentNext = PendingIntent.getService(getApplicationContext(), 0,
+                actionNextIntent, 0);
+
+        Intent actionPrevIntent = new Intent(getApplicationContext(), MusicService.class);
+        actionPrevIntent.setAction(ACTION_PREVIOUS_TRACK);
+        mPendingIntentPrev = PendingIntent.getService(getApplicationContext(), 0,
+                actionPrevIntent, 0);
+
+        Intent actionPlayIntent = new Intent(getApplicationContext(), MusicService.class);
+        actionPlayIntent.setAction(ACTION_CHANGE_MEDIA_STATE);
+        mPendingIntentPlayPause = PendingIntent.getService(getApplicationContext(), 0,
+                actionPlayIntent, 0);
+
+        // TODO: 8/15/2018 test getUser()
+        mBuilder = new NotificationCompat.Builder(getApplicationContext(), "")
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                .setContentTitle(getCurrentTrack().getTitle())
+                .setContentText(getCurrentTrack().getUser().getUserName())
+                .setColor(getResources().getColor(R.color.colorPrimary))
+                .setSmallIcon(R.drawable.ic_music_note_green_24dp)
+                .setContentIntent(mPendingIntentOpenApp);
+
+        setLargeIconBuilder();
     }
 
     public class MusicBinder extends Binder {

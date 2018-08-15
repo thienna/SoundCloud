@@ -54,7 +54,7 @@ public class GenreViewModel extends BaseRecyclerViewViewModel<Track, TracksByGen
             //get service
             mMusicService = binder.getService();
             mServiceBounded = true;
-            mMusicService.setPlaybackListener(new PlaybackListener());
+            mMusicService.setPlaybackInfoListener(new PlaybackListener());
         }
 
         @Override
@@ -141,7 +141,7 @@ public class GenreViewModel extends BaseRecyclerViewViewModel<Track, TracksByGen
             return;
         }
         if (mServiceBounded) {
-            mMusicService.playTracksList(mTracks, 0);
+            mMusicService.playTrackAtPosition(0, mTracks.toArray(new Track[mTracks.size()]));
         }
 
     }

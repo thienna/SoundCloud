@@ -27,9 +27,9 @@ public interface MusicPlayerManager {
 
     Track getCurrentTrack();
 
-    int getCurrentState();
+    int getMediaState();
 
-    List<Track> getListTrack();
+    List<Track> getTracks();
 
     void playTrackAtPosition(int position, Track... tracks);
 
@@ -44,5 +44,5 @@ public interface MusicPlayerManager {
 
     boolean isShuffle();
 
-    void changeShuffleState();
+    void toggleShuffleState();
 }

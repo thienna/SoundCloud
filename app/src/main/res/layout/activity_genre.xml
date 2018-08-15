@@ -106,6 +106,7 @@
             app:backgroundTint="@color/color_carnation"
             app:layout_anchor="@id/main_appbar"
             app:layout_anchorGravity="bottom|right|end"
-            app:rippleColor="@color/color_athens_gray" />
+            app:rippleColor="@color/color_athens_gray"
+            android:onClick="@{() -> viewModel.onFloatButtonClick()}"/>
     </android.support.design.widget.CoordinatorLayout>
 </layout>

@@ -33,7 +33,7 @@ public class MusicPlayerController implements MusicPlayerManager,
     private Runnable mSeekBarPositionUpdateTask;
     private Handler mHandler;
     private MediaPlayer mMediaPlayer;
-    private PlaybackInfoListener mListener;
+    private List<PlaybackInfoListener> mListeners = new ArrayList<>();
     private int mCurrentTrackPosition;
     @PlaybackInfoListener.State
     private int mState;
@@ -70,13 +70,15 @@ public class MusicPlayerController implements MusicPlayerManager,
             mMediaPlayer.start();
             notifyChangingState(PlaybackInfoListener.State.PLAYING);
 
-            if (mListener == null) {
+            if (mListeners == null || mListeners.isEmpty()) {
                 return;
             }
 
-            if (mListener.isUpdatingProgressSeekBar() && mScheduledExecutorService == null) {
-                startProgressCallback();
-            }
+//            for (PlaybackInfoListener listener : mListeners) {
+//                if (listener.isUpdatingProgressSeekBar() && mScheduledExecutorService == null) {
+//                    startProgressCallback();
+//                }
+//            }
         }
     }
 
@@ -136,28 +138,44 @@ public class MusicPlayerController implements MusicPlayerManager,
 
     @Override
     public void endProgressCallback() {
-        if (mScheduledExecutorService == null) {
-            return;
-        }
+//        if (mScheduledExecutorService == null) {
+//            return;
+//        }
+//
+//        mScheduledExecutorService.shutdownNow();
+//        mScheduledExecutorService = null;
+//        mSeekBarPositionUpdateTask = null;
 
-        mScheduledExecutorService.shutdownNow();
-        mScheduledExecutorService = null;
-        mSeekBarPositionUpdateTask = null;
-
-        if (mListener == null) {
-            return;
-        }
-
-        mListener.onProgressUpdate(0);
+//        if (mListener == null) {
+//            return;
+//        }
+//
+//        mListener.onProgressUpdate(0);
     }
 
     @Override
-    public void setPlaybackInfoListener(PlaybackInfoListener listener) {
-        mListener = listener;
-
-        if (mListener != null && mListener.isUpdatingProgressSeekBar()) {
-            startProgressCallback();
+    public void addPlaybackInfoListener(PlaybackInfoListener listener) {
+        if (listener == null) {
+            return;
         }
+        mListeners.add(listener);
+        if (mMediaPlayer == null) {
+            return;
+        }
+        if (mMediaPlayer.isPlaying()) {
+            listener.onTrackChanged(mTracks.get(mCurrentTrackPosition));
+        }
+//        if (mListener != null && mListener.isUpdatingProgressSeekBar()) {
+//            startProgressCallback();
+//        }
+    }
+
+    @Override
+    public void removePlaybackInfoListener(PlaybackInfoListener listener) {
+        if (listener == null) {
+            return;
+        }
+        mListeners.remove(listener);
     }
 
     @Override
@@ -287,13 +305,13 @@ public class MusicPlayerController implements MusicPlayerManager,
         mMediaPlayer.start();
         notifyChangingState(PlaybackInfoListener.State.PLAYING);
 
-        if (mListener == null) {
-            return;
-        }
+//        if (mListener == null) {
+//            return;
+//        }
 
-        if (mListener.isUpdatingProgressSeekBar()) {
-            startProgressCallback();
-        }
+//        if (mListener.isUpdatingProgressSeekBar()) {
+//            startProgressCallback();
+//        }
     }
 
     private void notifyChangingState(@PlaybackInfoListener.State int state) {
@@ -303,8 +321,10 @@ public class MusicPlayerController implements MusicPlayerManager,
             mMusicService.initNotification(state);
         }
 
-        if (mListener == null) return;
-        mListener.onStateChanged(mState);
+        if (mListeners == null) return;
+        for (PlaybackInfoListener listener : mListeners) {
+            listener.onStateChanged(mState);
+        }
     }
 
     private void prepareLoadTrack() {
@@ -319,11 +339,13 @@ public class MusicPlayerController implements MusicPlayerManager,
         notifyChangingState(PlaybackInfoListener.State.PREPARE);
         loadTrack();
 
-        if (mListener == null) {
+        if (mListeners == null || mListeners.isEmpty()) {
             return;
         }
 
-        mListener.onTrackChanged(mTracks.get(mCurrentTrackPosition));
+        for (PlaybackInfoListener listener : mListeners) {
+            listener.onTrackChanged(mTracks.get(mCurrentTrackPosition));
+        }
     }
 
     private void loadTrack() {
@@ -363,14 +385,14 @@ public class MusicPlayerController implements MusicPlayerManager,
     }
 
     private void updateProgressCallBackTask() {
-        if (mMediaPlayer == null || !mMediaPlayer.isPlaying()) {
-            return;
-        }
-        int currentPosition = mMediaPlayer.getCurrentPosition();
-        if (mListener == null) {
-            return;
-        }
-        mListener.onProgressUpdate((double) currentPosition / mMediaPlayer.getDuration() *
-                Constants.SEEK_BAR_TRACK_DURATION);
+//        if (mMediaPlayer == null || !mMediaPlayer.isPlaying()) {
+//            return;
+//        }
+//        int currentPosition = mMediaPlayer.getCurrentPosition();
+//        if (mListener == null) {
+//            return;
+//        }
+//        mListener.onProgressUpdate((double) currentPosition / mMediaPlayer.getDuration() *
+//                Constants.SEEK_BAR_TRACK_DURATION);
     }
 }

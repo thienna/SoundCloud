@@ -61,6 +61,7 @@ public class MusicService extends Service implements MusicPlayerManager {
     @Override
     public void onCreate() {
         super.onCreate();
+        mMusicPlayerManager = new MusicPlayerController(this);
     }
 
     @Override
@@ -178,9 +179,15 @@ public class MusicService extends Service implements MusicPlayerManager {
     }
 
     @Override
-    public void setPlaybackInfoListener(PlaybackInfoListener listener) {
+    public void addPlaybackInfoListener(PlaybackInfoListener listener) {
         if (mMusicPlayerManager == null) return;
-        mMusicPlayerManager.setPlaybackInfoListener(listener);
+        mMusicPlayerManager.addPlaybackInfoListener(listener);
+    }
+
+    @Override
+    public void removePlaybackInfoListener(PlaybackInfoListener listener) {
+        if (mMusicPlayerManager == null) return;
+        mMusicPlayerManager.removePlaybackInfoListener(listener);
     }
 
     @Override

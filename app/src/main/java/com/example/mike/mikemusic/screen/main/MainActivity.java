@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity
     private static final int PERMISSION_CODE_WRITE_EXTERNAL = 1;
     private SearchView mSearchView;
     private MenuItem mSearchMenu;
+    private MainViewModel mViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +72,18 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onMenuItemActionCollapse(MenuItem menuItem) {
         return true;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mViewModel.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mViewModel.onStop();
     }
 
     private void initView() {
@@ -117,9 +130,9 @@ public class MainActivity extends AppCompatActivity
     private void showIfPermissionSuccess() {
         ActivityMainBinding activityMainBinding = DataBindingUtil.setContentView(this, R.layout
                 .activity_main);
-        MainViewModel mainViewModel = new MainViewModel(this);
+        mViewModel = new MainViewModel(this);
         initView();
-        activityMainBinding.setViewModel(mainViewModel);
+        activityMainBinding.setViewModel(mViewModel);
     }
 
     private void showDialogPermissionDenied(String permission){

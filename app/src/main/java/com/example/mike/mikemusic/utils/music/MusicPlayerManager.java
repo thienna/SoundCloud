@@ -21,7 +21,9 @@ public interface MusicPlayerManager {
 
     void endProgressCallback();
 
-    void setPlaybackInfoListener(PlaybackInfoListener listener);
+    void addPlaybackInfoListener(PlaybackInfoListener listener);
+
+    void removePlaybackInfoListener(PlaybackInfoListener listener);
 
     void seekTo(int percent);
 

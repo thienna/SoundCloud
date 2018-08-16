@@ -1,6 +1,7 @@
 package com.example.mike.mikemusic.utils;
 
 import android.databinding.BindingAdapter;
+import android.graphics.drawable.Drawable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
@@ -51,5 +52,22 @@ public class BindingUtils {
     @BindingAdapter({"formatDuration"})
     public static void formatDuration(TextView view,long number) {
         view.setText(Utils.parseMilliSecondsToTimer(number));
+    }
+
+    @BindingAdapter(value = {"app:playerImageUrl", "app:error"}, requireAll = false)
+    public static void showImage(ImageView view, String imageUrl, Drawable error) {
+        if (error == null) {
+            Glide.with(view.getContext())
+                    .asBitmap()
+                    .load(imageUrl)
+                    .apply(new RequestOptions().placeholder(R.drawable.no_image).centerCrop())
+                    .into(view);
+        } else {
+            Glide.with(view.getContext())
+                    .asBitmap()
+                    .load(imageUrl)
+                    .apply(new RequestOptions().placeholder(error).centerCrop())
+                    .into(view);
+        }
     }
 }

@@ -32,8 +32,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/toolbar" />
 
-        <include
-            layout="@layout/player_control"
+        <FrameLayout
+            android:id="@+id/fragment_player_control"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_48"
             app:layout_constraintBottom_toTopOf="@id/bottom_navigation_main"

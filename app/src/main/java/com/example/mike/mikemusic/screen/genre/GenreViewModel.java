@@ -46,6 +46,8 @@ public class GenreViewModel extends BaseRecyclerViewViewModel<Track, TracksByGen
     private MusicService mMusicService;
     private Intent mPlayIntent;
     private boolean mServiceBounded;
+    private PlaybackListener mListener;
+
     //connect to the service
     private ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
@@ -54,7 +56,8 @@ public class GenreViewModel extends BaseRecyclerViewViewModel<Track, TracksByGen
             //get service
             mMusicService = binder.getService();
             mServiceBounded = true;
-            mMusicService.setPlaybackInfoListener(new PlaybackListener());
+            mListener = new PlaybackListener();
+            mMusicService.addPlaybackInfoListener(mListener);
         }
 
         @Override
@@ -102,6 +105,13 @@ public class GenreViewModel extends BaseRecyclerViewViewModel<Track, TracksByGen
     @Override
     public void onStop() {
         mSubscription.clear();
+        if (mServiceBounded) {
+            mActivity.unbindService(mServiceConnection);
+            if (mListener != null) {
+                mMusicService.removePlaybackInfoListener(mListener);
+            }
+            mServiceBounded = false;
+        }
     }
 
     public void onBackPress() {

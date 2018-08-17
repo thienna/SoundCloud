@@ -1,14 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".screen.search.SearchFragment">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.example.mike.mikemusic.screen.search.SearchViewModel" />
+    </data>
+
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:fillViewport="true"
+        tools:context=".screen.search.SearchFragment">
 
-</FrameLayout>
+        <include
+            android:id="@+id/recycler_search"
+            layout="@layout/recycler_view_with_data"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:viewModel="@{(com.example.mike.mikemusic.screen.BaseRecyclerViewViewModel)viewModel}" />
+
+    </android.support.v4.widget.NestedScrollView>
+
+</layout>

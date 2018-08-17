@@ -25,6 +25,7 @@ public final class Constants {
         public static final String PARAM_KEY_KIND = "kind";
         public static final String PARAM_KEY_LIMIT = "limit";
         public static final String PARAM_KEY_CLIENT_ID = "client_id";
+        public static final String PARAM_KEY_QUERY = "q";
 
         public static final String DEFAULT_PARAM_VALUE_GENRE = "soundcloud%3Agenres%3A";
         public static final int DEFAULT_PARAM_VALUE_OFFSET = 0;

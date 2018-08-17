@@ -1,6 +1,7 @@
 package com.example.mike.mikemusic.data.source.api.service;
 
 import com.example.mike.mikemusic.data.model.CollectionResult;
+import com.example.mike.mikemusic.data.model.CollectionResultSearch;
 import com.example.mike.mikemusic.utils.Constants;
 
 import io.reactivex.Observable;
@@ -19,4 +20,11 @@ public interface ApiSoundCloud {
             @Query(Constants.ApiSoundCloud.PARAM_KEY_KIND) String kind,
             @Query(Constants.ApiSoundCloud.PARAM_KEY_LIMIT) int limit,
             @Query(Constants.ApiSoundCloud.PARAM_KEY_CLIENT_ID) String clientId);
+
+    @GET("/search/tracks")
+    Observable<CollectionResultSearch> searchTracks(
+            @Query(Constants.ApiSoundCloud.PARAM_KEY_LIMIT) int limit,
+            @Query(Constants.ApiSoundCloud.PARAM_KEY_OFFSET) int offset,
+            @Query(Constants.ApiSoundCloud.PARAM_KEY_CLIENT_ID) String clientId,
+            @Query(Constants.ApiSoundCloud.PARAM_KEY_QUERY) String query);
 }

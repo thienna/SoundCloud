@@ -16,6 +16,7 @@
     <string name="no_internet">No internet connection.</string>
     <string name="current_no_track">Currently has no track</string>
     <string name="let_make_some_noise">Let\'s make some noise!</string>
+    <string name="search_empty">Empty result.</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

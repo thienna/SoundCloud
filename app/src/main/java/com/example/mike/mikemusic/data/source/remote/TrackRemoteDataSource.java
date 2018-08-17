@@ -56,4 +56,15 @@ public class TrackRemoteDataSource implements TrackDatasource.RemoteDataSource {
 
         return collectionResultObservable;
     }
+
+    @Override
+    public Observable<List<Track>> searchTrack(String query, int offset) {
+
+        Observable<List<Track>> collectionResultObservable = mApiSoundCloud
+                .searchTracks(Constants.ApiSoundCloud.DEFAULT_PARAM_VALUE_LIMIT, offset,
+                        Constants.ApiSoundCloud.DEFAULT_PARAM_VALUE_CLIENT_ID, query)
+                .map(collectionResult -> collectionResult.getTracks());
+
+        return collectionResultObservable;
+    }
 }

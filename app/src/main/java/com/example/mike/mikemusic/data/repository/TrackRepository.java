@@ -56,4 +56,9 @@ public class TrackRepository implements
     public Observable<List<Track>> getTracksLocal() {
         return mLocalDataSource.getTracksLocal();
     }
+
+    @Override
+    public Observable<List<Track>> searchTrack(String query, int offset) {
+        return mRemoteDataSource.searchTrack(query, offset);
+    }
 }

@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.MenuItem;
 
@@ -20,7 +21,9 @@ import com.example.mike.mikemusic.screen.home.HomeFragment;
 import com.example.mike.mikemusic.screen.personal.PersonalFragment;
 import com.example.mike.mikemusic.screen.playercontrol.PlayerControlFragment;
 import com.example.mike.mikemusic.screen.playlist.PlaylistFragment;
+import com.example.mike.mikemusic.screen.search.SearchFragment;
 import com.example.mike.mikemusic.service.MusicService;
+import com.example.mike.mikemusic.utils.Constants;
 import com.example.mike.mikemusic.utils.music.PlaybackInfoListener;
 
 /**
@@ -28,16 +31,19 @@ import com.example.mike.mikemusic.utils.music.PlaybackInfoListener;
  */
 
 public class MainViewModel extends BaseObservable implements BaseViewModel,
-        BottomNavigationView.OnNavigationItemSelectedListener {
+        BottomNavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener,
+        MenuItem.OnActionExpandListener {
     private Fragment mCurrentFragment;
     private Fragment mHomeFragment;
     private Fragment mPersonalFragment;
     private Fragment mPlaylistFragment;
+    private SearchFragment mSearchFragment;
     private Fragment mPlayerControlFragment;
     private FragmentManager mFragmentManager;
     private MainActivity mMainActivity;
     private Track mTrack;
     private PlaybackListener mListener;
+    private String mQuery = "";
 
     //Service
     private MusicService mMusicService;
@@ -108,6 +114,42 @@ public class MainViewModel extends BaseObservable implements BaseViewModel,
         }
     }
 
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        if (mQuery.equals(query)) {
+            return false;
+        } else {
+            mQuery = query;
+            mMainActivity.setQuery(query, false);
+            mSearchFragment.searchTracks(query, Constants.ApiSoundCloud.DEFAULT_PARAM_VALUE_OFFSET);
+            mMainActivity.clearFocus();
+            return true;
+        }
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        return false;
+    }
+
+    @Override
+    public boolean onMenuItemActionExpand(MenuItem item) {
+        mMainActivity.hideBottomNavigation();
+        mFragmentManager.beginTransaction()
+                .show(mSearchFragment)
+                .hide(mCurrentFragment)
+                .addToBackStack(null)
+                .commit();
+        return true;
+    }
+
+    @Override
+    public boolean onMenuItemActionCollapse(MenuItem item) {
+        mMainActivity.showBottomNavigation();
+        mFragmentManager.popBackStack();
+        return true;
+    }
+
     private void hideShowFragment(Fragment hide, Fragment show) {
         mFragmentManager.beginTransaction().hide(hide).show(show).commit();
     }
@@ -118,9 +160,11 @@ public class MainViewModel extends BaseObservable implements BaseViewModel,
         mHomeFragment = HomeFragment.newInstance();
         mPlaylistFragment = PlaylistFragment.newInstance();
         mPersonalFragment = PersonalFragment.newInstance();
+        mSearchFragment = SearchFragment.newInstance();
         mPlayerControlFragment = PlayerControlFragment.newInstance();
         addHideFragment(mPlaylistFragment);
         addHideFragment(mPersonalFragment);
+        addHideFragment(mSearchFragment);
         mFragmentManager.beginTransaction().add(R.id.frame_container, mHomeFragment).add(R.id
                 .fragment_player_control, mPlayerControlFragment).commit();
         mCurrentFragment = mHomeFragment;
@@ -142,5 +186,15 @@ public class MainViewModel extends BaseObservable implements BaseViewModel,
         public void onStateChanged(int state) {
             Log.d("TAG", "onStateChanged: " + state);
         }
+    }
+
+    public interface SearchViewListener {
+        void setQuery(String query, boolean submit);
+
+        void clearFocus();
+
+        void hideBottomNavigation();
+
+        void showBottomNavigation();
     }
 }

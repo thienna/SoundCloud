@@ -14,6 +14,8 @@ public interface TrackDatasource {
 
     interface RemoteDataSource {
         Observable<List<Track>> getTracksByGenre(String genrePath, int offset);
+
+        Observable<List<Track>> searchTrack(String query, int offset);
     }
 
     interface LocalDataSource {

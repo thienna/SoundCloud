@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -20,18 +21,19 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.example.mike.mikemusic.R;
 import com.example.mike.mikemusic.databinding.ActivityMainBinding;
 
-public class MainActivity extends AppCompatActivity
-        implements SearchView.OnQueryTextListener, MenuItem.OnActionExpandListener {
+public class MainActivity extends AppCompatActivity implements MainViewModel.SearchViewListener {
 
     private static final int PERMISSION_CODE_WRITE_EXTERNAL = 1;
     private SearchView mSearchView;
     private MenuItem mSearchMenu;
     private MainViewModel mViewModel;
+    private BottomNavigationView mBottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,30 +50,20 @@ public class MainActivity extends AppCompatActivity
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.setIconifiedByDefault(true);
         mSearchMenu = menu.findItem(R.id.action_search);
-        mSearchView.setOnQueryTextListener(this);
         mSearchView.setQueryHint(getString(R.string.search_hint));
-        mSearchMenu.setOnActionExpandListener(this);
+        mSearchMenu.setOnActionExpandListener(mViewModel);
+        mSearchView.setOnQueryTextListener(mViewModel);
         return true;
     }
 
     @Override
-    public boolean onQueryTextSubmit(String s) {
-        return false;
+    public void hideBottomNavigation() {
+        mBottomNavigationView.setVisibility(View.GONE);
     }
 
     @Override
-    public boolean onQueryTextChange(String s) {
-        return false;
-    }
-
-    @Override
-    public boolean onMenuItemActionExpand(MenuItem menuItem) {
-        return true;
-    }
-
-    @Override
-    public boolean onMenuItemActionCollapse(MenuItem menuItem) {
-        return true;
+    public void showBottomNavigation() {
+        mBottomNavigationView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -86,8 +78,19 @@ public class MainActivity extends AppCompatActivity
         mViewModel.onStop();
     }
 
+    @Override
+    public void setQuery(String query, boolean submit) {
+        mSearchView.setQuery(query, submit);
+    }
+
+    @Override
+    public void clearFocus() {
+        mSearchView.clearFocus();
+    }
+
     private void initView() {
         Toolbar toolbar = findViewById(R.id.toolbar);
+        mBottomNavigationView = findViewById(R.id.bottom_navigation_main);
         setSupportActionBar(toolbar);
     }
 

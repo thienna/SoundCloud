@@ -25,9 +25,8 @@
             android:id="@+id/frame_container"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginBottom="@dimen/dp_40"
             android:layout_marginTop="@dimen/dp_48"
-            app:layout_constraintBottom_toTopOf="@id/bottom_navigation_main"
+            app:layout_constraintBottom_toTopOf="@id/fragment_player_control"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/toolbar" />

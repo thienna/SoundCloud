@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="java.lang.Integer" />
+
+        <variable
+            name="position"
+            type="int" />
+
+        <variable
+            name="track"
+            type="com.example.mike.mikemusic.data.model.Track" />
+
+        <variable
+            name="viewModel"
+            type="com.example.mike.mikemusic.screen.search.SearchViewModel" />
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/dp_6"
+        android:paddingEnd="@dimen/dp_4"
+        android:paddingStart="@dimen/dp_12"
+        android:paddingTop="@{position == 0 ? @dimen/dp_16 : @dimen/dp_6}">
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/card_track_art"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="@dimen/dp_5"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:layout_width="@dimen/dp_66"
+                android:layout_height="@dimen/dp_66"
+                android:scaleType="centerCrop"
+                app:imageUrl="@{track.artworkUrl}" />
+
+        </android.support.v7.widget.CardView>
+
+        <TextView
+            android:id="@+id/text_track_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="@dimen/dp_16"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="@{track.title}"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/color_river_bed"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/guideline"
+            app:layout_constraintStart_toEndOf="@+id/card_track_art"
+            app:layout_constraintTop_toTopOf="@+id/card_track_art" />
+
+        <TextView
+            android:id="@+id/text_track_singer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="@{track.user.userName}"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintEnd_toStartOf="@+id/guideline"
+            app:layout_constraintStart_toStartOf="@+id/text_track_title"
+            app:layout_constraintTop_toBottomOf="@+id/text_track_title" />
+
+        <ImageView
+            android:id="@+id/image_track_play_ic"
+            android:layout_width="@dimen/dp_18"
+            android:layout_height="@dimen/dp_18"
+            android:layout_marginTop="@dimen/dp_6"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/text_track_title"
+            app:layout_constraintTop_toBottomOf="@+id/text_track_singer"
+            app:srcCompat="@drawable/ic_play_arrow_gray_24dp" />
+
+        <ImageView
+            android:id="@+id/image_track_like_ic"
+            android:layout_width="@dimen/dp_12"
+            android:layout_height="@dimen/dp_12"
+            android:layout_marginStart="@dimen/dp_16"
+            app:layout_constraintBottom_toBottomOf="@+id/image_track_play_ic"
+            app:layout_constraintStart_toEndOf="@+id/text_track_play_count"
+            app:layout_constraintTop_toTopOf="@+id/image_track_play_ic"
+            app:srcCompat="@drawable/ic_favorite_gray_24dp" />
+
+        <TextView
+            android:id="@+id/text_track_play_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_2"
+            android:text="@{Integer.toString(track.playbackCount)}"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintBottom_toBottomOf="@+id/image_track_play_ic"
+            app:layout_constraintStart_toEndOf="@+id/image_track_play_ic"
+            app:layout_constraintTop_toTopOf="@+id/image_track_play_ic" />
+
+        <TextView
+            android:id="@+id/text_track_like_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_2"
+            android:text="@{Integer.toString(track.likesCount)}"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintBottom_toBottomOf="@+id/image_track_play_ic"
+            app:layout_constraintStart_toEndOf="@+id/image_track_like_ic"
+            app:layout_constraintTop_toTopOf="@+id/image_track_play_ic" />
+
+        <TextView
+            android:id="@+id/text_track_duration"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textSize="@dimen/sp_12"
+            app:formatDuration="@{track.duration}"
+            app:layout_constraintBottom_toTopOf="@+id/image_more_options"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/image_more_options"
+            android:layout_width="@dimen/dp_32"
+            android:layout_height="@dimen/dp_32"
+            android:src="@drawable/ic_more_vert_gray_24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.85" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</layout>

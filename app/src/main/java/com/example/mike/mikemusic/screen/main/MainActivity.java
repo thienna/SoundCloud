@@ -74,8 +74,8 @@ public class MainActivity extends AppCompatActivity implements MainViewModel.Sea
 
     @Override
     protected void onStop() {
-        super.onStop();
         mViewModel.onStop();
+        super.onStop();
     }
 
     @Override
@@ -109,7 +109,6 @@ public class MainActivity extends AppCompatActivity implements MainViewModel.Sea
             }
         } else {
             showIfPermissionSuccess();
-//            Toast.makeText(this, "" + permission + " is already granted.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -123,9 +122,7 @@ public class MainActivity extends AppCompatActivity implements MainViewModel.Sea
                     showIfPermissionSuccess();
                     break;
             }
-//            Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
         } else {
-//            Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
             showDialogPermissionDenied(permissions[0]);
         }
     }

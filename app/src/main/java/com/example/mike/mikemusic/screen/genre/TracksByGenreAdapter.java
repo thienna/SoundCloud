@@ -24,7 +24,7 @@ public class TracksByGenreAdapter
     private LayoutInflater mLayoutInflater;
     private List<Track> mTracks;
 
-    public TracksByGenreAdapter(Context context, GenreViewModel viewModel, List<Track> tracks) {
+    TracksByGenreAdapter(Context context, GenreViewModel viewModel, List<Track> tracks) {
         super(context);
         mViewModel = viewModel;
         mTracks = tracks;

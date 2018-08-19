@@ -43,7 +43,7 @@ public class GenreActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        super.onStop();
         mViewModel.onStop();
+        super.onStop();
     }
 }

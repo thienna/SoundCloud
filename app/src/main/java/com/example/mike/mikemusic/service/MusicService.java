@@ -77,6 +77,7 @@ public class MusicService extends Service implements MusicPlayerManager {
         return mIBinder;
     }
 
+
     @Override
     public int getMediaState() {
         if (mMusicPlayerManager == null) {

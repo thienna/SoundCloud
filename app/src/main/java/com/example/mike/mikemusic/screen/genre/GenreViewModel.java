@@ -1,12 +1,7 @@
 package com.example.mike.mikemusic.screen.genre;
 
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.os.IBinder;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.example.mike.mikemusic.R;
@@ -17,10 +12,9 @@ import com.example.mike.mikemusic.data.source.local.TrackLocalDataSource;
 import com.example.mike.mikemusic.data.source.remote.TrackRemoteDataSource;
 import com.example.mike.mikemusic.screen.BaseRecyclerViewViewModel;
 import com.example.mike.mikemusic.screen.EndlessRecyclerViewOnScrollListener;
-import com.example.mike.mikemusic.service.MusicService;
+import com.example.mike.mikemusic.screen.playercontrol.PlayerControlFragment;
 import com.example.mike.mikemusic.utils.Constants;
 import com.example.mike.mikemusic.utils.Utils;
-import com.example.mike.mikemusic.utils.music.PlaybackInfoListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,42 +32,26 @@ public class GenreViewModel extends BaseRecyclerViewViewModel<Track, TracksByGen
 
     private TrackRepository mTrackRepository;
     private CompositeDisposable mSubscription;
-    private List<Track> mTracks;
-    private int mOffset;
+    private List<Track> mTracks = new ArrayList<>();
+    private int mOffset = Constants.ApiSoundCloud.DEFAULT_PARAM_VALUE_OFFSET;
     private Genre mGenre;
+    private PlayerControlFragment mPlayerControlFragment;
 
-    //Service
-    private MusicService mMusicService;
-    private Intent mPlayIntent;
-    private boolean mServiceBounded;
-    private PlaybackListener mListener;
-
-    //connect to the service
-    private ServiceConnection mServiceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            MusicService.MusicBinder binder = (MusicService.MusicBinder) service;
-            //get service
-            mMusicService = binder.getService();
-            mServiceBounded = true;
-            mListener = new PlaybackListener();
-            mMusicService.addPlaybackInfoListener(mListener);
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            mServiceBounded = false;
-        }
-    };
-
-    public GenreViewModel(AppCompatActivity activity, Genre genre) {
+    GenreViewModel(AppCompatActivity activity, Genre genre) {
         super(activity);
+
         mTrackRepository = TrackRepository.getInstance(TrackRemoteDataSource.getInstance(),
                 TrackLocalDataSource.getInstance(mActivity));
         mSubscription = new CompositeDisposable();
-        mTracks = new ArrayList<>();
-        mOffset = Constants.ApiSoundCloud.DEFAULT_PARAM_VALUE_OFFSET;
         mGenre = genre;
+
+        addPlayerControlFragment();
+    }
+
+    private void addPlayerControlFragment() {
+        mPlayerControlFragment = PlayerControlFragment.newInstance();
+        mActivity.getSupportFragmentManager().beginTransaction().add(R.id
+                .fragment_player_control, mPlayerControlFragment).commit();
     }
 
     @Override
@@ -95,23 +73,11 @@ public class GenreViewModel extends BaseRecyclerViewViewModel<Track, TracksByGen
     @Override
     public void onStart() {
         setLoadMoreListener();
-        if (mPlayIntent == null) {
-            mPlayIntent = new Intent(mActivity, MusicService.class);
-            mActivity.startService(mPlayIntent);
-            mActivity.bindService(mPlayIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
-        }
     }
 
     @Override
     public void onStop() {
         mSubscription.clear();
-        if (mServiceBounded) {
-            mActivity.unbindService(mServiceConnection);
-            if (mListener != null) {
-                mMusicService.removePlaybackInfoListener(mListener);
-            }
-            mServiceBounded = false;
-        }
     }
 
     public void onBackPress() {
@@ -146,31 +112,14 @@ public class GenreViewModel extends BaseRecyclerViewViewModel<Track, TracksByGen
     }
 
     public void onFloatButtonClick() {
-        if (mTracks == null || mTracks.size() == 0) {
-            Toast.makeText(mMusicService, "Nothing to play!", Toast.LENGTH_SHORT).show();
+        if (mPlayerControlFragment == null) {
             return;
         }
-        if (mServiceBounded) {
-            mMusicService.playTrackAtPosition(0, mTracks.toArray(new Track[mTracks.size()]));
-        }
 
+        mPlayerControlFragment.playTrackList(mTracks);
     }
 
     public String formatDuration(long number) {
         return Utils.parseMilliSecondsToTimer(number);
-    }
-
-    public class PlaybackListener extends PlaybackInfoListener {
-        public void onProgressUpdate(double percent) {
-            Log.d("TAG", "onProgressUpdate: " + percent);
-        }
-
-        public void onTrackChanged(Track track) {
-            Log.d("TAG", "onTrackChanged: " + track);
-        }
-
-        public void onStateChanged(int state) {
-            Log.d("TAG", "onStateChanged: " + state);
-        }
     }
 }

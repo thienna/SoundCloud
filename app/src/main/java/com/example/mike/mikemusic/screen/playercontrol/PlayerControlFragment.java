@@ -9,7 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.mike.mikemusic.R;
+import com.example.mike.mikemusic.data.model.Track;
 import com.example.mike.mikemusic.databinding.FragmentPlayerControlBinding;
+
+import java.util.List;
 
 /**
  * Created by ThienNA on 17/08/2018.
@@ -47,7 +50,11 @@ public class PlayerControlFragment extends Fragment {
 
     @Override
     public void onStop() {
-        super.onStop();
         mViewModel.onStop();
+        super.onStop();
+    }
+
+    public void playTrackList(List<Track> tracks) {
+        mViewModel.playTrackList(tracks);
     }
 }

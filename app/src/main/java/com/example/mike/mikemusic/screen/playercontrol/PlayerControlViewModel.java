@@ -21,31 +21,29 @@ import com.example.mike.mikemusic.utils.music.PlaybackInfoListener;
 public class PlayerControlViewModel implements BaseViewModel {
 
     private AppCompatActivity mActivity;
-    private Track mTrack;
     private FragmentPlayerControlBinding mBinding;
     private PlaybackListener mListener = new PlaybackListener();
-    ;
 
     //Service
     private MusicService mMusicService;
     private Intent mPlayIntent;
     private boolean mServiceBounded;
+    private MusicService.MusicBinder mMusicBinder;
 
     //connect to the service
     private ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            MusicService.MusicBinder binder = (MusicService.MusicBinder) service;
+            mMusicBinder = (MusicService.MusicBinder) service;
             //get service
-            mMusicService = binder.getService();
-            mServiceBounded = true;
+            mMusicService = mMusicBinder.getService();
             mMusicService.addPlaybackInfoListener(mListener);
-            Log.d("MDB", "onServiceConnected: ");
+            mServiceBounded = true;
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            mServiceBounded = false;
+            mMusicBinder = null;
         }
     };
 
@@ -56,30 +54,38 @@ public class PlayerControlViewModel implements BaseViewModel {
 
     @Override
     public void onStart() {
-        if (mPlayIntent == null) {
-            mPlayIntent = new Intent(mActivity, MusicService.class);
-            mActivity.startService(mPlayIntent);
-            mActivity.bindService(mPlayIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
-        }
+        doBindService();
     }
 
     @Override
     public void onStop() {
+        doUnbindService();
+    }
+
+    public void doBindService() {
+        if (mPlayIntent == null) {
+            mPlayIntent = new Intent(mActivity, MusicService.class);
+        }
+        mActivity.startService(mPlayIntent);
+        if (mActivity.bindService(mPlayIntent, mServiceConnection, Context.BIND_AUTO_CREATE)) {
+            mServiceBounded = true;
+        }
+    }
+
+    public void doUnbindService() {
         if (mServiceBounded) {
-            mMusicService.removePlaybackInfoListener(mListener);
             mActivity.unbindService(mServiceConnection);
+            mMusicService.removePlaybackInfoListener(mListener);
             mServiceBounded = false;
         }
     }
 
     public class PlaybackListener extends PlaybackInfoListener {
         public void onProgressUpdate(double percent) {
-            Log.d("TAG", "onProgressUpdate: " + percent);
         }
 
         public void onTrackChanged(Track track) {
-            Log.d("MDB", "onTrackChanged: " + track.getTitle());
-            mTrack = track;
+            Log.d("AMEN", "onTrackChanged: " + track.getTitle());
             mBinding.setTrack(track);
         }
 

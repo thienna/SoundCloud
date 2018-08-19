@@ -2,6 +2,7 @@ package com.example.mike.mikemusic.data.repository;
 
 import android.support.annotation.NonNull;
 
+import com.example.mike.mikemusic.data.model.Playlist;
 import com.example.mike.mikemusic.data.model.Track;
 import com.example.mike.mikemusic.data.source.TrackDatasource;
 import com.example.mike.mikemusic.data.source.local.TrackLocalDataSource;
@@ -60,5 +61,34 @@ public class TrackRepository implements
     @Override
     public Observable<List<Track>> searchTrack(String query, int offset) {
         return mRemoteDataSource.searchTrack(query, offset);
+    }
+
+    @Override
+    public boolean deleteTrack(Track track) {
+        return mLocalDataSource != null && mLocalDataSource.deleteTrack(track);
+    }
+
+    @Override
+    public void addTracksToPlaylist(int playlistId, TrackDatasource.OnHandleDatabaseListener listener, Track... tracks) {
+        if (mLocalDataSource == null) return;
+        mLocalDataSource.addTracksToPlaylist(playlistId, listener, tracks);
+    }
+
+    @Override
+    public void addTracksToNewPlaylist(String newPlaylistName, TrackDatasource.OnHandleDatabaseListener listener, Track... tracks) {
+        if (mLocalDataSource == null) return;
+        mLocalDataSource.addTracksToNewPlaylist(newPlaylistName, listener, tracks);
+    }
+
+    @Override
+    public List<Playlist> getPlaylist() {
+        if (mLocalDataSource == null) return null;
+        return mLocalDataSource.getPlaylist();
+    }
+
+    @Override
+    public List<Playlist> getDetailPlaylist() {
+        if (mLocalDataSource == null) return null;
+        return mLocalDataSource.getDetailPlaylist();
     }
 }

@@ -17,6 +17,8 @@
     <string name="current_no_track">Currently has no track</string>
     <string name="let_make_some_noise">Let\'s make some noise!</string>
     <string name="search_empty">Empty result.</string>
+    <string name="msg_add_track_to_playlist_fail">Add track to playlist failed.</string>
+    <string name="msg_added_to_playlist">Added to playlist.</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

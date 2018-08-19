@@ -190,4 +190,24 @@ public class Track extends BaseObservable implements Parcelable {
         parcel.writeString(mUri);
         parcel.writeInt(mPlaybackCount);
     }
+
+    public static class TrackEntity {
+        public static final String COLLECTION = "collection";
+        public static final String ARTWORK_URL = "artwork_url";
+        public static final String DESCRIPTION = "description";
+        public static final String DOWNLOADABLE = "downloadable";
+        public static final String DOWNLOAD_URL = "download_url";
+        public static final String DURATION = "duration";
+        public static final String ID = "id";
+        public static final String PLAYBACK_COUNT = "playback_count";
+        public static final String TITLE = "title";
+        public static final String URI = "uri";
+        public static final String USER = "user";
+        public static final String TRACK = "track";
+        public static final String USERNAME = "username";
+        public static final String LIKES_COUNT = "likes_count";
+        public static final String AVATAR_URL = "avatar_url";
+        public static final String LARGE_IMAGE_SIZE = "large";
+        public static final String BETTER_IMAGE_SIZE = "original";
+    }
 }

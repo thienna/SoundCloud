@@ -36,4 +36,8 @@ public final class Constants {
         private ApiSoundCloud() {
         }
     }
+
+    // SQL
+    public static final String DATABASE_NAME = "mike_soundcloud.db";
+    public static final int DATABASE_VERSION = 1;
 }

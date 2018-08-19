@@ -1,5 +1,6 @@
 package com.example.mike.mikemusic.data.source;
 
+import com.example.mike.mikemusic.data.model.Playlist;
 import com.example.mike.mikemusic.data.model.Track;
 
 import java.util.List;
@@ -20,5 +21,23 @@ public interface TrackDatasource {
 
     interface LocalDataSource {
         Observable<List<Track>> getTracksLocal();
+
+        boolean deleteTrack(Track track);
+
+        void addTracksToPlaylist(int playlistId,
+                                 OnHandleDatabaseListener listener, Track... tracks);
+
+        void addTracksToNewPlaylist(String newPlaylistName,
+                                    OnHandleDatabaseListener listener, Track... tracks);
+
+        List<Playlist> getPlaylist();
+
+        List<Playlist> getDetailPlaylist();
+    }
+
+    interface OnHandleDatabaseListener {
+        void onHandleSuccess(String message);
+
+        void onHandleFailure(String message);
     }
 }
